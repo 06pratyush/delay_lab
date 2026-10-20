@@ -1,0 +1,137 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 340" width="960" height="340" role="img" aria-labelledby="t d">
+  <title id="t">Delay Lab's three modes at 100 ms of delay</title>
+  <desc id="d">VR-style: a wireframe room, late but with nothing real to compare. AR-style: a red sticker trails behind the real nose. AR + fix: prediction puts the sticker back on the nose.</desc>
+  <defs>
+    <style>
+      text { font-family: "Segoe UI", -apple-system, Helvetica, Arial, sans-serif; }
+      .chip { fill: #0b0b0b; }
+      .chipt { fill: #fcfcfb; font-size: 13px; font-weight: 700; }
+      .mode { fill: #0b0b0b; font-size: 15px; font-weight: 700; }
+      .strip { fill: #ffffff; font-size: 10.5px; }
+      .cap1 { fill: #0b0b0b; font-size: 13px; font-weight: 600; }
+      .cap2 { fill: #52514e; font-size: 12px; }
+      .lbl { fill: #0b0b0b; font-size: 11px; font-weight: 600; paint-order: stroke; stroke: #dfe7ef; stroke-width: 4px; stroke-linejoin: round; }
+      .grid { stroke: #4a4a4a; stroke-width: 1; }
+      .skin { fill: #f1c9a5; stroke: #c99a73; stroke-width: 1.5; }
+    </style>
+    <clipPath id="screen"><rect x="0" y="52" width="290" height="190" rx="10"/></clipPath>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#0b0b0b"/>
+    </marker>
+    <g id="face">
+      <!-- shoulders, neck, head, hair, eyes, nose -->
+      <path d="M-70,110 C-62,70 -30,62 0,62 C30,62 62,70 70,110 Z" fill="#7a8ca3"/>
+      <rect x="-13" y="40" width="26" height="28" rx="6" fill="#e6b994"/>
+      <ellipse cx="0" cy="0" rx="44" ry="54" class="skin"/>
+      <path d="M-44,-8 C-46,-50 -20,-62 2,-60 C30,-60 48,-44 44,-8 C38,-30 20,-38 0,-38 C-22,-38 -38,-30 -44,-8 Z" fill="#3b2a20"/>
+      <ellipse cx="-16" cy="-4" rx="4" ry="5" fill="#2b2b2b"/>
+      <ellipse cx="16" cy="-4" rx="4" ry="5" fill="#2b2b2b"/>
+      <path d="M0,0 L-6,16 Q0,20 6,16" fill="none" stroke="#b07f5a" stroke-width="2" stroke-linecap="round"/>
+      <path d="M-12,30 Q0,37 12,30" fill="none" stroke="#a05a4a" stroke-width="2" stroke-linecap="round"/>
+    </g>
+    <g id="truenose">
+      <path d="M-7,0 H7 M0,-7 V7" stroke="#2ea043" stroke-width="3" stroke-linecap="round"/>
+    </g>
+    <g id="sticker">
+      <circle r="10" fill="#e5383b" stroke="#ffffff" stroke-width="2.5"/>
+    </g>
+  </defs>
+
+  <rect x="0.5" y="0.5" width="959" height="339" rx="16" fill="#fcfcfb" stroke="#e1e0d9"/>
+
+  <!-- ============ Panel 1: VR-style ============ -->
+  <g transform="translate(20,0)">
+    <rect x="0" y="18" width="26" height="24" rx="6" class="chip"/>
+    <text x="13" y="35" text-anchor="middle" class="chipt">V</text>
+    <text x="36" y="35" class="mode">VR-style</text>
+
+    <rect x="0" y="52" width="290" height="190" rx="10" fill="#0e0e0e"/>
+    <rect x="0" y="52" width="290" height="22" rx="10" fill="#000000"/>
+    <text x="10" y="67" class="strip">VR-style | delay 100 ms | nothing real to compare</text>
+    <g clip-path="url(#screen)">
+    <!-- floor grid converging on (145,120) -->
+    <g class="grid">
+      <line x1="0" y1="162" x2="290" y2="162"/><line x1="0" y1="178" x2="290" y2="178"/>
+      <line x1="0" y1="200" x2="290" y2="200"/><line x1="0" y1="230" x2="290" y2="230"/>
+      <line x1="145" y1="150" x2="145" y2="242"/><line x1="125" y1="150" x2="60" y2="242"/>
+      <line x1="165" y1="150" x2="230" y2="242"/><line x1="105" y1="150" x2="-10" y2="242"/>
+      <line x1="185" y1="150" x2="300" y2="242"/><line x1="0" y1="150" x2="290" y2="150"/>
+    </g>
+    <!-- far box (blue) -->
+    <g fill="none" stroke="#5aa9ff" stroke-width="2.5">
+      <rect x="118" y="100" width="54" height="50"/><rect x="126" y="106" width="40" height="38"/>
+      <path d="M118,100 L126,106 M172,100 L166,106 M118,150 L126,144 M172,150 L166,144"/>
+    </g>
+    <!-- middle box (yellow) -->
+    <g fill="none" stroke="#ffd34d" stroke-width="2.5">
+      <rect x="178" y="128" width="62" height="58"/><rect x="196" y="122" width="62" height="58"/>
+      <path d="M178,128 L196,122 M240,128 L258,122 M178,186 L196,180 M240,186 L258,180"/>
+    </g>
+    <!-- near box (red) -->
+    <g fill="none" stroke="#ff5a5a" stroke-width="2.5">
+      <rect x="14" y="170" width="84" height="72"/><rect x="40" y="158" width="84" height="72"/>
+      <path d="M14,170 L40,158 M98,170 L124,158 M98,242 L124,230"/>
+    </g>
+    </g>
+    <text x="0" y="266" class="cap1">The whole world is late together</text>
+    <text x="0" y="285" class="cap2">The room follows your head 100 ms late, but</text>
+    <text x="0" y="302" class="cap2">nothing real is on screen to compare it with,</text>
+    <text x="0" y="319" class="cap2">so you only feel it (floaty, and worse above 50 ms).</text>
+  </g>
+
+  <!-- ============ Panel 2: AR-style ============ -->
+  <g transform="translate(335,0)">
+    <rect x="0" y="18" width="26" height="24" rx="6" class="chip"/>
+    <text x="13" y="35" text-anchor="middle" class="chipt">A</text>
+    <text x="36" y="35" class="mode">AR-style</text>
+
+    <rect x="0" y="52" width="290" height="190" rx="10" fill="#dfe7ef"/>
+    <g clip-path="url(#screen)"><g transform="translate(160,150)">
+      <!-- faint ghosts: where the head just was -->
+      <g opacity="0.12" transform="translate(-36,0)"><use href="#face"/></g>
+      <g opacity="0.22" transform="translate(-18,0)"><use href="#face"/></g>
+      <use href="#face"/>
+      <use href="#truenose" transform="translate(0,12)"/>
+      <use href="#sticker" transform="translate(-36,12)"/>
+      <line x1="-24" y1="34" x2="-4" y2="34" stroke="#0b0b0b" stroke-width="1.5" stroke-dasharray="3 3" marker-end="url(#arrow)" marker-start="url(#arrow)"/>
+      <text x="-14" y="50" text-anchor="middle" class="lbl">gap</text>
+    </g>
+    </g>
+    <line x1="200" y1="92" x2="262" y2="92" stroke="#0b0b0b" stroke-width="2" marker-end="url(#arrow)"/>
+    <text x="231" y="86" text-anchor="middle" class="lbl">head turning</text>
+    <rect x="0" y="52" width="290" height="22" rx="10" fill="#000000" opacity="0.72"/>
+    <text x="10" y="67" class="strip">AR-style | delay 100 ms | gap 18.2 px</text>
+    <text x="0" y="266" class="cap1">The sticker slides off your real nose</text>
+    <text x="0" y="285" class="cap2">The camera picture (the real world) is never late;</text>
+    <text x="0" y="302" class="cap2">the red sticker is. The app measures the gap to</text>
+    <text x="0" y="319" class="cap2">the green cross (your real nose) in pixels.</text>
+  </g>
+
+  <!-- ============ Panel 3: AR + fix ============ -->
+  <g transform="translate(650,0)">
+    <rect x="0" y="18" width="26" height="24" rx="6" class="chip"/>
+    <text x="13" y="35" text-anchor="middle" class="chipt">F</text>
+    <text x="36" y="35" class="mode">AR + fix</text>
+
+    <rect x="0" y="52" width="290" height="190" rx="10" fill="#dfe7ef"/>
+    <g clip-path="url(#screen)"><g transform="translate(160,150)">
+      <g opacity="0.12" transform="translate(-36,0)"><use href="#face"/></g>
+      <g opacity="0.22" transform="translate(-18,0)"><use href="#face"/></g>
+      <use href="#face"/>
+      <!-- where the late data says the nose is -->
+      <circle cx="-36" cy="12" r="10" fill="none" stroke="#e5383b" stroke-width="2" stroke-dasharray="3 3"/>
+      <text x="-36" y="-8" text-anchor="middle" class="lbl">late</text>
+      <path d="M-24,32 Q-14,44 -4,26" fill="none" stroke="#0b0b0b" stroke-width="1.5" marker-end="url(#arrow)"/>
+      <use href="#truenose" transform="translate(0,12)"/>
+      <use href="#sticker" transform="translate(-3,12)"/>
+    </g>
+    </g>
+    <text x="108" y="200" text-anchor="end" class="lbl">guess ahead</text>
+    <rect x="0" y="52" width="290" height="22" rx="10" fill="#000000" opacity="0.72"/>
+    <text x="10" y="67" class="strip">AR + fix | delay 100 ms | gap 3.9 px</text>
+    <text x="0" y="266" class="cap1">Guess where the head is going</text>
+    <text x="0" y="285" class="cap2">Like a real headset: late position + speed × delay.</text>
+    <text x="0" y="302" class="cap2">Most of the slide disappears; it overshoots for</text>
+    <text x="0" y="319" class="cap2">a moment when you stop suddenly.</text>
+  </g>
+</svg>
