@@ -1,6 +1,6 @@
 """Delay Lab: one window, one delay slider, switchable modes.
 
-Keys:  A = AR-style   Q / Esc = quit
+Keys:  V = VR-style   A = AR-style   Q / Esc = quit
 """
 
 from __future__ import annotations
@@ -15,15 +15,15 @@ import cv2
 import numpy as np
 
 from delay import MAX_DELAY_MS, DelayBuffer
-from render import draw_sticker, draw_text_strip, draw_true_nose
+from render import draw_room, draw_sticker, draw_text_strip, draw_true_nose, view_from_nose
 from tracker import FaceTracker, open_camera, prepare
 
 ROOT = Path(__file__).parent
 WINDOW = "Delay Lab"
 SLIDER = "delay ms"
-MODE_KEYS = {ord("a"): "AR"}
-MODE_NAMES = {"AR": "AR-style"}
-HINT = "A: AR   slider: delay   Q: quit"
+MODE_KEYS = {ord("v"): "VR", ord("a"): "AR"}
+MODE_NAMES = {"VR": "VR-style", "AR": "AR-style"}
+HINT = "V: VR   A: AR   slider: delay   Q: quit"
 
 
 class Smoother:
@@ -101,14 +101,25 @@ def main() -> None:
             gap_shown = gap_s.add(gap)
             log.row(now_ms, mode, delay_ms, face.nose if face else None, sticker, gap, face_w, fps)
 
-            view = frame
-            if sticker is not None:
-                if face:
-                    draw_true_nose(view, face.nose)
-                draw_sticker(view, sticker, face_w)
+            if mode == "VR":
+                # Camera picture hidden: the delayed nose only moves the viewpoint.
+                view = np.zeros_like(frame)
+                size = (frame.shape[1], frame.shape[0])
+                draw_room(view, view_from_nose(sticker, size) if sticker is not None else (0.0, 0.0))
+            else:
+                view = frame
+                if sticker is not None:
+                    if face:
+                        draw_true_nose(view, face.nose)
+                    draw_sticker(view, sticker, face_w)
 
             status = f"{MODE_NAMES[mode]}  |  delay {delay_ms:3d} ms  |  "
-            status += f"gap {gap_shown:5.1f} px" if face else "no face"
+            if not face:
+                status += "no face"
+            elif mode == "VR":
+                status += "nothing real to compare"  # gap still logged, never shown
+            else:
+                status += f"gap {gap_shown:5.1f} px"
             status += f"  |  {fps:4.1f} fps"
             draw_text_strip(view, status, HINT)
             cv2.imshow(WINDOW, view)
