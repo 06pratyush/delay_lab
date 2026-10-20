@@ -5,8 +5,11 @@ Keys:  A = AR-style   Q / Esc = quit
 
 from __future__ import annotations
 
+import csv
 import time
 from collections import deque
+from datetime import datetime
+from pathlib import Path
 
 import cv2
 import numpy as np
@@ -15,6 +18,7 @@ from delay import MAX_DELAY_MS, DelayBuffer
 from render import draw_sticker, draw_text_strip, draw_true_nose
 from tracker import FaceTracker, open_camera, prepare
 
+ROOT = Path(__file__).parent
 WINDOW = "Delay Lab"
 SLIDER = "delay ms"
 MODE_KEYS = {ord("a"): "AR"}
@@ -34,6 +38,33 @@ class Smoother:
         return float(np.mean(self._vals)) if self._vals else float("nan")
 
 
+def stamp() -> str:
+    return datetime.now().strftime("%Y%m%d_%H%M%S")
+
+
+class SessionLog:
+    """One CSV row per frame, in every mode (VR gaps are logged but never shown)."""
+
+    COLUMNS = ["t_ms", "mode", "delay_ms", "nose_x", "nose_y", "sticker_x", "sticker_y",
+               "gap_px", "face_w_px", "fps"]
+
+    def __init__(self, folder: Path = ROOT / "logs"):
+        folder.mkdir(exist_ok=True)
+        self.path = folder / f"session_{stamp()}.csv"
+        self._file = open(self.path, "w", newline="")
+        self._writer = csv.writer(self._file)
+        self._writer.writerow(self.COLUMNS)
+
+    def row(self, t_ms, mode, delay_ms, nose, sticker, gap, face_w, fps) -> None:
+        nx, ny = nose if nose is not None else ("", "")
+        sx, sy = sticker if sticker is not None else ("", "")
+        vals = [t_ms, mode, delay_ms, nx, ny, sx, sy, gap, face_w, fps]
+        self._writer.writerow([f"{v:.2f}" if isinstance(v, float) else v for v in vals])
+
+    def close(self) -> None:
+        self._file.close()
+
+
 def main() -> None:
     cap = open_camera()
     cv2.namedWindow(WINDOW)
@@ -44,6 +75,8 @@ def main() -> None:
     face_w = 120.0
     fps_s, gap_s = Smoother(30), Smoother(15)
     t_prev = time.perf_counter()
+    log = SessionLog()
+    print(f"Logging to {log.path}")
 
     with FaceTracker() as tracker:
         while True:
@@ -66,6 +99,7 @@ def main() -> None:
             sticker = buf.delayed(now_ms, delay_ms)
             gap = float(np.linalg.norm(face.nose - sticker)) if face and sticker is not None else float("nan")
             gap_shown = gap_s.add(gap)
+            log.row(now_ms, mode, delay_ms, face.nose if face else None, sticker, gap, face_w, fps)
 
             view = frame
             if sticker is not None:
@@ -85,6 +119,7 @@ def main() -> None:
             if key in MODE_KEYS:
                 mode = MODE_KEYS[key]
 
+    log.close()
     cap.release()
     cv2.destroyAllWindows()
 
