@@ -119,10 +119,10 @@ head motion and the chart comes out identical on every run.
 
 ```mermaid
 flowchart LR
-    R["🎥 Press R<br/>turn your head side to side<br/>for ~20 s, press R again"] --> S["▶️ Press S<br/>(or python sweep.py)"]
-    S --> T["🙂 Track the video once"]
-    T --> X["🔁 Replay at 0, 25, 50, 75, 100, 150 ms<br/>× fix off / fix on"]
-    X --> O["📊 results/sweep.png<br/>+ sweep.csv"]
+    R["🎥 R<br/>record ~20 s<br/>of head turns"] --> S["▶️ S<br/>start sweep"]
+    S --> T["🙂 track<br/>video once"]
+    T --> X["🔁 replay<br/>6 delays ×<br/>fix off / on"]
+    X --> O["📊 sweep.png<br/>+ sweep.csv"]
 ```
 
 <p align="center">
@@ -150,14 +150,14 @@ Every camera frame, about 30 times a second:
 
 ```mermaid
 flowchart LR
-    A["📷 Webcam frame<br/>mirrored, 640×480"] --> B["🙂 MediaPipe Face Landmarker<br/>nose tip + face width"]
-    B --> C[("⏱️ Delay buffer<br/>where was the nose<br/>D ms ago?")]
-    C --> V["🧊 VR-style<br/>late nose moves the viewpoint"]
-    C --> AR["🔴 AR-style<br/>sticker at the late nose"]
-    C --> F["🎯 AR + fix<br/>late nose + speed × D"]
-    AR --> G["📏 gap = real nose − sticker<br/>on screen + logs/*.csv"]
+    A["📷 webcam<br/>frame"] --> B["🙂 MediaPipe<br/>nose tip"]
+    B --> C[("⏱️ delay buffer<br/>nose D ms ago")]
+    C --> V["🧊 VR-style<br/>moves the room"]
+    C --> AR["🔴 AR-style<br/>late sticker"]
+    C --> F["🎯 AR + fix<br/>late + speed × D"]
+    AR --> G["📏 gap in px<br/>screen + CSV"]
     F --> G
-    V -. "logged, never shown" .-> G
+    V -. "logged only" .-> G
 ```
 
 - **Delay buffer:** every nose position is saved with its time. To draw, the app asks "where was the nose
@@ -190,11 +190,12 @@ flowchart LR
 
 ## 📏 Real-world numbers
 
-Delay builds up along the whole path from **motion to photon** (from your movement to the light that shows it):
+Delay builds up along the whole path from **motion to photon**: the sensor notices the move, software works out
+where your head is, the picture is drawn, it waits for the next screen refresh, then the pixels light up.
 
 ```mermaid
 flowchart LR
-    M(("🙂 head<br/>moves")) --> S1["1 · Sensing<br/>camera / motion sensor"] --> S2["2 · Working out<br/>the position"] --> S3["3 · Drawing<br/>the picture"] --> S4["4 · Waiting for<br/>the screen refresh"] --> S5["5 · Lighting<br/>the pixels"] --> E(("👁️ you<br/>see it"))
+    M(("🙂 move")) --> S1["1 · sense"] --> S2["2 · locate"] --> S3["3 · draw"] --> S4["4 · wait for<br/>screen"] --> S5["5 · light<br/>pixels"] --> E(("👁️ see"))
 ```
 
 | System | Motion-to-photon delay | AR slip at 1 m (100°/s turn) |
