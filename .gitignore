@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+
+# Downloaded model (fetch with: python download_model.py)
+models/*.task
+
+# Generated at runtime
+recordings/
+logs/
+results/*
+!results/.gitkeep
+
+# Planning document (kept locally, not part of the repo)
+Delay Lab Build Plan.pdf
+
+# Editors / OS
+.vscode/
+.idea/
+Thumbs.db
+.DS_Store
