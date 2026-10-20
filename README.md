@@ -22,7 +22,7 @@
 > **No headset needed.** A laptop with a webcam is enough. Pick a delay with the slider,
 > switch between <kbd>V</kbd> VR-style, <kbd>A</kbd> AR-style and <kbd>F</kbd> AR + fix, and watch the difference.
 
-**Contents:** [The idea](#-the-idea-in-30-seconds) · [Quick start](#-quick-start) · [Controls](#-controls) · [What you see](#-what-you-see) · [The experiment](#-the-experiment) · [How it works](#%EF%B8%8F-how-it-works) · [Real numbers](#-real-world-numbers) · [Presenting](#-presenting-it) · [DelayLab.exe](#-delaylabexe) · [Help](#-troubleshooting)
+**Contents:** [The idea](#-the-idea-in-30-seconds) · [Quick start](#-quick-start) · [Controls](#-controls) · [What you see](#-what-you-see) · [The experiment](#-the-experiment) · [How it works](#-how-it-works) · [Real numbers](#-real-world-numbers) · [Presenting](#-presenting-it) · [DelayLab.exe](#-delaylabexe) · [Help](#-troubleshooting)
 
 ---
 
@@ -144,7 +144,7 @@ This chart is the **expected shape**, computed from a synthetic head track. Your
 
 ---
 
-## ⚙️ How it works
+## 🔧 How it works
 
 Every camera frame, about 30 times a second:
 
