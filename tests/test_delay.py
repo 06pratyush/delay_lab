@@ -61,3 +61,9 @@ def test_prediction_overshoots_when_head_stops():
         buf.push(t, (min(t, 200), 0))  # moves, then stops dead at t=200
     guess = buf.predicted(now_ms=290, delay_ms=100, dt_ms=10)
     assert guess[0] > 200  # still guessing motion that already ended
+
+
+def test_frame_interval_is_median_of_recent_gaps():
+    buf = filled(step_ms=33.0)
+    assert buf.frame_interval_ms() == pytest.approx(33.0)
+    assert DelayBuffer().frame_interval_ms(default=40) == 40

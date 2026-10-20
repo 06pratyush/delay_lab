@@ -45,6 +45,11 @@ class DelayBuffer:
         (t0, p0), (t1, p1) = earlier, later
         return p0 + (t_ms - t0) / (t1 - t0) * (p1 - p0)
 
+    def frame_interval_ms(self, default: float = 1000 / 30) -> float:
+        """Typical time between recent samples (median of the last 10 gaps)."""
+        times = [t for t, _ in list(self._samples)[-11:]]
+        return float(np.median(np.diff(times))) if len(times) > 1 else default
+
     def delayed(self, now_ms: float, delay_ms: float) -> np.ndarray | None:
         return self.at(now_ms - delay_ms)
 
