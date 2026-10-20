@@ -1,6 +1,6 @@
 """Delay Lab: one window, one delay slider, switchable modes.
 
-Keys:  V = VR-style   A = AR-style   F = AR + fix   R = record   Q / Esc = quit
+Keys:  V = VR-style   A = AR-style   F = AR + fix   R = record   S = sweep   Q / Esc = quit
 """
 
 from __future__ import annotations
@@ -14,6 +14,7 @@ from pathlib import Path
 import cv2
 import numpy as np
 
+import sweep
 from delay import MAX_DELAY_MS, DelayBuffer
 from render import draw_room, draw_sticker, draw_text_strip, draw_true_nose, view_from_nose
 from tracker import FaceTracker, open_camera, prepare
@@ -23,7 +24,7 @@ WINDOW = "Delay Lab"
 SLIDER = "delay ms"
 MODE_KEYS = {ord("v"): "VR", ord("a"): "AR", ord("f"): "FIX"}
 MODE_NAMES = {"VR": "VR-style", "AR": "AR-style", "FIX": "AR + fix"}
-HINT = "V: VR   A: AR   F: AR + fix   slider: delay   R: record   Q: quit"
+HINT = "V: VR   A: AR   F: AR + fix   slider: delay   R: record   S: sweep   Q: quit"
 
 
 class Smoother:
@@ -103,6 +104,33 @@ class Recorder:
         return self.path
 
 
+def run_sweep_from_app(frame_shape) -> None:
+    """S key: sweep the newest recording, showing progress, then the chart."""
+    path = sweep.latest_recording()
+    if path is None:
+        print("No recording yet: press R, turn your head side to side for ~20 s, press R again.")
+        return
+
+    def progress(f: float) -> None:
+        img = np.zeros(frame_shape, np.uint8)
+        draw_text_strip(img, f"Sweeping {path.name}: tracking {f:4.0%}", "the app resumes when done")
+        cv2.rectangle(img, (40, 220), (40 + int(560 * f), 260), (90, 220, 90), -1)
+        cv2.rectangle(img, (40, 220), (600, 260), (255, 255, 255), 1)
+        cv2.imshow(WINDOW, img)
+        cv2.waitKey(1)
+
+    try:
+        df = sweep.sweep_video(path, progress=progress)
+    except (RuntimeError, FileNotFoundError) as e:
+        print(f"Sweep failed: {e}")
+        return
+    print(df.to_string(index=False))
+    chart = cv2.imread(str(sweep.RESULTS / "sweep.png"))
+    if chart is not None:
+        cv2.imshow("Delay Lab - sweep chart", chart)
+    print(f"Saved {sweep.RESULTS / 'sweep.csv'} and {sweep.RESULTS / 'sweep.png'}")
+
+
 def main() -> None:
     cap = open_camera()
     cv2.namedWindow(WINDOW)
@@ -171,7 +199,7 @@ def main() -> None:
             cv2.imshow(WINDOW, view)
 
             key = cv2.waitKey(1) & 0xFF
-            if key in (ord("q"), 27):
+            if key in (ord("q"), 27) or cv2.getWindowProperty(WINDOW, cv2.WND_PROP_VISIBLE) < 1:
                 break
             if key == ord("r"):
                 if rec.active:
@@ -179,6 +207,11 @@ def main() -> None:
                 else:
                     rec.start(raw, fps)
                     print(f"Recording to {rec.path} (press R to stop)")
+            if key == ord("s"):
+                if rec.active:
+                    print(f"Saved recording {rec.stop()}")
+                run_sweep_from_app(frame.shape)
+                t_prev = time.perf_counter()  # don't count the sweep as one long frame
             if key in MODE_KEYS:
                 mode = MODE_KEYS[key]
 
