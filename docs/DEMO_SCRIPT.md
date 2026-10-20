@@ -1,6 +1,6 @@
 # Five-minute demo script
 
-Set-up before the talk: laptop on the projector, `python app.py` running, good
+Set-up before the talk: laptop on the projector, `python app.py` (or `DelayLab.exe`) running, window dragged large or `W` for fullscreen, good
 front lighting on your face, `results/sweep.png` open in a second window.
 
 | # | Time | Mode | Slider | What you do | What you say |
@@ -12,6 +12,8 @@ front lighting on your face, `results/sweep.png` open in a second window.
 | 5 | 1 min | – | – | Point at the numbers. | "Vision Pro: about 11 ms. Quest 3: about 35–40 ms. This webcam: about **[your number]** ms. AR has to hit numbers VR can get away with missing. That's why AR is the harder problem." |
 
 Fill **[your number]** with the result of [the clap test](MEASURE_WEBCAM_DELAY.md).
+
+**Tip:** run `python app.py --selftest 8` (or `DelayLab.exe --selftest 8`) before the talk to check the camera and lighting.
 
 **Optional volunteer:** after step 4, let one person sit at the laptop for 30 seconds
 and switch between **A** and **V** at 100 ms.

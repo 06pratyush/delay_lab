@@ -1,5 +1,7 @@
 # Delay Lab
 
+[![tests](https://github.com/06pratyush/delay_lab/actions/workflows/tests.yml/badge.svg)](https://github.com/06pratyush/delay_lab/actions/workflows/tests.yml)
+
 **See why AR punishes headset delay more than VR, on an ordinary laptop webcam.**
 
 Every headset is a little late. When you move your head, the picture catches up a few
@@ -16,8 +18,9 @@ how much of the slide disappears.
 | `V` | **VR-style** | Camera hidden. A wireframe room moves with your (delayed) head. |
 | `A` | **AR-style** | Your live face, with a red sticker at the *delayed* nose position. A green cross marks the real nose. |
 | `F` | **AR + fix** | Same, but the sticker is drawn where your head is *predicted* to be. |
-| `R` | record | Start/stop recording a head-movement video for the sweep. |
+| `R` | record | Start/stop recording: `head_*.mp4` (raw camera, for the sweep) and `demo_*.mp4` (what the window shows, for slides/GIF). |
 | `S` | sweep | Replay the newest recording at every delay, with and without the fix → CSV + chart. |
+| `W` | fullscreen | Toggle fullscreen; the window can also be dragged to any size for a projector. |
 | `Q` / `Esc` | quit | |
 
 The slider sets the added delay. The strip at the top shows the mode, the delay, the live
@@ -34,6 +37,10 @@ python check_setup.py        # prints versions and grabs one webcam frame
 python app.py
 ```
 
+Check everything at once with `python app.py --selftest 8`: the app drives itself through
+AR at 0 and 100 ms, AR + fix, VR, a short recording and a sweep, then prints a summary
+(frames, fps, face detection rate, gap per mode). Use `--camera 1` for another webcam.
+
 Use Python 3.11. MediaPipe can lag behind the newest Python releases.
 `python tracker.py` gives a bare nose-dot preview, if you only want to check tracking.
 
@@ -43,7 +50,7 @@ Use Python 3.11. MediaPipe can lag behind the newest Python releases.
 2. Press **S** (or run `python sweep.py`). The recording is tracked once. That same
    nose track is then replayed through 0, 25, 50, 75, 100 and 150 ms, without and with the fix.
 3. Results land in `results/`:
-   - `sweep.csv`: mean, median and p95 gap per delay and fix setting.
+   - `sweep.csv`: mean, median and p95 gap per delay and fix setting, plus the noise floor.
    - `track.csv`: the per-frame nose track.
    - `sweep.png`: the chart.
 
@@ -57,6 +64,9 @@ recording. Replace it with your own `results/sweep.png`.
 
 - **Without the fix:** the gap grows in a near-straight line, as *slip = head speed × delay* predicts (dotted line).
 - **With the fix:** the gap is much smaller but not zero. The guess overshoots when the head stops or turns back.
+- **Grey band (noise floor):** tracker jitter, i.e. how far the nose dot wobbles around a smooth
+  fit of its own path. The gap at 0 ms is zero by construction, so this is the honest floor.
+  On a typical laptop webcam it is well under 1 px.
 - **What would prove us wrong:** a clearly non-straight red line, or a fix that doesn't help. Either would mean tracker jitter outweighs the delay effect.
 
 ## How it works
@@ -76,11 +86,14 @@ camera frame ─► mirror + 640×480 ─► MediaPipe Face Landmarker (nose tip
 
 | File | Role |
 |------|------|
-| `app.py` | Window, slider, keys, modes, per-frame CSV log, recorder |
+| `app.py` | Window, slider, keys, modes, per-frame CSV log, recorder, `--selftest` |
 | `tracker.py` | MediaPipe Face Landmarker wrapper (VIDEO mode) |
 | `delay.py` | Time-stamped look-back buffer and the guess-ahead fix |
 | `render.py` | Sticker, text strip, wireframe room (pinhole projection, no 3D engine) |
-| `sweep.py` | Recorded video → every delay × fix → CSV + chart |
+| `sweep.py` | Recorded video → every delay × fix → CSV + chart (with noise floor) |
+| `make_gif.py` | Demo recording → README GIF |
+| `paths.py` | Where the model and output folders live (source or exe) |
+| `build_exe.py` | PyInstaller → `dist/DelayLab.exe` |
 | `tests/` | `python -m pytest` (no webcam needed) |
 
 At 0 ms the sticker sits exactly on your nose. The camera image and the face dots come
@@ -102,16 +115,36 @@ and, above about 50 ms, as sickness.
 
 ## Presenting it
 
+**GIF for the README or slides:** press `R`, show the sticker sliding at 100 ms and then
+mode `F`, press `R` again, then:
+
+```bash
+python make_gif.py --start 2 --seconds 6     # newest demo_*.mp4 -> results/demo.gif
+```
+
+Move it to `docs/demo.gif` and add `![Delay Lab demo](docs/demo.gif)` here if you want it in the repo.
+
 [docs/DEMO_SCRIPT.md](docs/DEMO_SCRIPT.md) has the five-minute demo: show the problem,
 show why VR hides it, show the measurement, show the fix and its overshoot, then compare
 with real headsets.
+
+## Packaging: DelayLab.exe
+
+```bash
+pip install -r requirements-build.txt
+python build_exe.py              # -> dist/DelayLab.exe (~130 MB, model included)
+dist\DelayLab.exe --selftest 8   # same self-check as above
+```
+
+The exe runs on a Windows 10/11 PC with no Python installed. `logs/`, `recordings/` and
+`results/` are created next to it. The first start takes a few seconds while it unpacks.
 
 ## Troubleshooting
 
 - **"no face":** light your face from the front and sit 40–80 cm from the camera.
 - **Under about 20 fps:** close other apps. Jerky tracking hides the effect.
 - **The fix looks worse:** prediction overshoots on jerky motion. Turn smoothly for the sweep recording.
-- **Wrong camera:** change the index in `open_camera()` in `tracker.py`.
+- **Wrong camera:** `python app.py --camera 1` (or 2, ...).
 
 ## License
 
