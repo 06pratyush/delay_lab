@@ -24,7 +24,8 @@ DELAYS_MS = [0, 25, 50, 75, 100, 150]
 
 
 def latest_recording() -> Path | None:
-    videos = sorted(RECORDINGS.glob("*.mp4"), key=lambda p: p.stat().st_mtime)
+    # head_*.mp4 only: demo_*.mp4 files have the sticker and text drawn on them.
+    videos = sorted(RECORDINGS.glob("head_*.mp4"), key=lambda p: p.stat().st_mtime)
     return videos[-1] if videos else None
 
 
@@ -141,7 +142,7 @@ def sweep_video(path: Path, out_dir: Path = RESULTS, progress=None) -> pd.DataFr
 def main(argv: list[str]) -> int:
     path = Path(argv[1]) if len(argv) > 1 else latest_recording()
     if path is None:
-        print("No video given and none in recordings/. Record one in the app with R.")
+        print("No video given and no head_*.mp4 in recordings/. Record one in the app with R.")
         return 1
     print(f"Sweeping {path}")
     try:
