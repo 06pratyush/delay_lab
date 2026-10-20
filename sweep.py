@@ -122,32 +122,30 @@ def noise_floor_px(nose: np.ndarray) -> float:
 
 
 def plot(df: pd.DataFrame, out: Path, speed: float | None = None, title: str = "",
-         noise: float | None = None) -> None:
-    import matplotlib
+         noise: float | None = None,
+         subtitle: str = "same recorded head motion replayed at every delay") -> None:
+    import chart_style as cs
 
-    matplotlib.use("Agg")
-    import matplotlib.pyplot as plt
-
-    fig, ax = plt.subplots(figsize=(7, 4.2), dpi=150)
+    fig, ax = cs.new_figure()
     off, on = df[~df.fix], df[df.fix]
-    ax.plot(off.delay_ms, off.mean_gap_px, "o-", color="#d62728", lw=2, label="without fix")
-    ax.plot(on.delay_ms, on.mean_gap_px, "o-", color="#1f77b4", lw=2, label="with fix (guess ahead)")
+    if noise and not np.isnan(noise):
+        ax.axhspan(0, noise, color=cs.MUTED, alpha=0.18, lw=0,
+                   label=f"tracker jitter ≈ {noise:.1f} px (noise floor)")
     if speed:
         d = np.array([0, max(df.delay_ms)])
-        ax.plot(d, speed * d, ":", color="gray", label="slip = head speed × delay")
-    if noise and not np.isnan(noise):
-        ax.axhspan(0, noise, color="gray", alpha=0.15, lw=0,
-                   label=f"tracker jitter ≈ {noise:.1f} px (noise floor)")
-    ax.set_xlabel("added delay (ms)")
-    ax.set_ylabel("average sticker gap (pixels)")
-    ax.set_title(title or "Delay Lab sweep: AR sticker error vs delay")
-    ax.set_xlim(left=0)
+        ax.plot(d, speed * d, ":", color=cs.MUTED, lw=1.2, label="prediction: slip = head speed × delay")
+    for part, color, name in ((off, cs.SERIES[0], "without fix"), (on, cs.SERIES[1], "with fix")):
+        ax.plot(part.delay_ms, part.mean_gap_px, "-o", color=color, lw=1.6, ms=5,
+                mec=cs.SURFACE, mew=1.2, label=name, zorder=3)
+        x, y = part.delay_ms.iloc[-1], part.mean_gap_px.iloc[-1]
+        ax.annotate(f"{name}\n{y:.1f} px", (x, y), xytext=(8, 0), textcoords="offset points",
+                    va="center", color=cs.INK_2, fontsize=9)
+    ax.set_xlabel("added delay (ms)", color=cs.INK_2)
+    ax.set_ylabel("average sticker gap (pixels)", color=cs.INK_2)
+    ax.set_xlim(0, max(df.delay_ms) * 1.18)  # room for the end labels
     ax.set_ylim(bottom=0)
-    ax.grid(alpha=0.3)
-    ax.legend()
-    fig.tight_layout()
-    fig.savefig(out, metadata={"Software": None})
-    plt.close(fig)
+    ax.legend(frameon=False, loc="upper left", labelcolor=cs.INK_2, fontsize=9)
+    cs.finish(fig, ax, out, title or "AR sticker error vs added delay", subtitle)
 
 
 def sweep_video(path: Path, out_dir: Path = RESULTS, progress=None) -> pd.DataFrame:
