@@ -15,12 +15,22 @@
 </p>
 
 <p align="center">
-  <img src="docs/img/modes.svg" alt="The three modes at 100 ms of delay: VR-style room, AR-style sticker sliding off the nose, AR + fix sticker back on the nose" width="100%">
+  <img src="docs/img/modes.svg" alt="Illustration of the three modes at 100 ms of delay: VR-style room, AR-style sticker sliding off the nose, AR + fix sticker back on the nose" width="100%"><br>
+  <sub>Illustration of the three modes. The gap numbers in it are examples, not measurements.</sub>
 </p>
 
 > [!TIP]
 > **No headset needed.** A laptop with a webcam is enough. Pick a delay with the slider,
 > switch between <kbd>V</kbd> VR-style, <kbd>A</kbd> AR-style and <kbd>F</kbd> AR + fix, and watch the difference.
+
+> [!IMPORTANT]
+> **Status: the app works; the main measurement has not been done yet.**
+>
+> | | |
+> |---|---|
+> | ✅ **Verified** | The app runs live on a laptop webcam (~30 fps, face found in ~100% of frames). All three modes, recording and the sweep run end to end. The packaged exe runs without Python. 26 tests pass. |
+> | ⏳ **Pending** | The proper **20-second sweep recording** the experiment is built around, and the clap test for the webcam's own delay. |
+> | ⚠️ **So far** | The only real measurement is one **2.5 s self-test clip**. It is a first sign, not a result ([details](#-the-experiment)). |
 
 **Contents:** [The idea](#-the-idea-in-30-seconds) · [Quick start](#-quick-start) · [Controls](#-controls) · [What you see](#-what-you-see) · [The experiment](#-the-experiment) · [How it works](#-how-it-works) · [Real numbers](#-real-world-numbers) · [Presenting](#-presenting-it) · [DelayLab.exe](#-delaylabexe) · [Help](#-troubleshooting)
 
@@ -40,7 +50,8 @@ and then switches on the fix real headsets use (**prediction**) to show how much
 </p>
 
 > **slip = head speed × delay.** At a normal 100°/s head turn, 20 ms of delay moves an AR object
-> 1 m away by about **3.5 cm**. That's easy to spot on a cup on a table.
+> 1 m away by about **3.5 cm**. That's easy to spot on a cup on a table. *(This chart is calculated
+> from that formula and published latency figures. It is not a Delay Lab measurement.)*
 
 ---
 
@@ -129,7 +140,9 @@ flowchart LR
   <img src="docs/img/expected_sweep.png" alt="Expected sweep chart: without the fix the gap grows in a straight line on the speed times delay prediction; with the fix it stays several times smaller" width="720">
 </p>
 
-This chart is the **expected shape**, computed from a synthetic head track. Your own `results/sweep.png` replaces it.
+This chart is a **prediction, not a measurement**: it comes from a synthetic sine-wave head track run through
+the real sweep code. It shows what the result should look like if the idea holds. The real chart comes from a
+20-second recording, which has not been made yet.
 
 | What you should see | What it means |
 |---|---|
@@ -139,8 +152,11 @@ This chart is the **expected shape**, computed from a synthetic head track. Your
 | ❌ **A clearly bent line, or a fix that doesn't help** | Would prove us wrong: tracker jitter beats the delay effect |
 
 > [!NOTE]
-> A first real run on a 2.5 s self-test clip already showed this pattern: a straight line on the prediction
-> (12.5 px at 100 ms), the fix about 3× smaller (4.4 px), and jitter of only 0.4 px.
+> **Only preliminary real data so far.** The one real run is a 2.5-second, 68-frame clip recorded during a
+> self-test, with no controlled head motion. It points the same way: 12.5 px at 100 ms without the fix,
+> 4.4 px with it, and 0.4 px of jitter. But it is far too short to count as the result. **Still pending:**
+> 20 s of smooth side-to-side head turns (<kbd>R</kbd> … <kbd>R</kbd>, then <kbd>S</kbd>). Its chart will
+> replace the prediction above.
 
 ---
 

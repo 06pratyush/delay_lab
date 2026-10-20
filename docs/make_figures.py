@@ -56,7 +56,7 @@ def slip_chart(out: Path) -> None:
     ax.set_xlabel("motion-to-photon delay (ms)", color=cs.INK_2)
     ax.set_ylabel("AR object slip at 1 m (cm)", color=cs.INK_2)
     cs.finish(fig, ax, out, "How far an AR object slips during a normal head turn",
-              f"head turning at {HEAD_SPEED_DEG_S}°/s; slip = speed × delay")
+              f"calculated, not measured: head turning at {HEAD_SPEED_DEG_S}°/s, slip = speed × delay")
 
 
 def expected_sweep(out: Path) -> None:
