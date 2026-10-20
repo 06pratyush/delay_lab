@@ -1,6 +1,6 @@
 """Delay Lab: one window, one delay slider, switchable modes.
 
-Keys:  V = VR-style   A = AR-style   F = AR + fix   Q / Esc = quit
+Keys:  V = VR-style   A = AR-style   F = AR + fix   R = record   Q / Esc = quit
 """
 
 from __future__ import annotations
@@ -23,7 +23,7 @@ WINDOW = "Delay Lab"
 SLIDER = "delay ms"
 MODE_KEYS = {ord("v"): "VR", ord("a"): "AR", ord("f"): "FIX"}
 MODE_NAMES = {"VR": "VR-style", "AR": "AR-style", "FIX": "AR + fix"}
-HINT = "V: VR   A: AR   F: AR + fix   slider: delay   Q: quit"
+HINT = "V: VR   A: AR   F: AR + fix   slider: delay   R: record   Q: quit"
 
 
 class Smoother:
@@ -65,6 +65,44 @@ class SessionLog:
         self._file.close()
 
 
+class Recorder:
+    """Saves raw camera frames to recordings/ for the sweep, plus each frame's real capture time."""
+
+    def __init__(self, folder: Path = ROOT / "recordings"):
+        self.folder = folder
+        self._writer = None
+        self._times: list[float] = []
+        self.path: Path | None = None
+
+    @property
+    def active(self) -> bool:
+        return self._writer is not None
+
+    def start(self, frame: np.ndarray, fps: float) -> None:
+        self.folder.mkdir(exist_ok=True)
+        self.path = self.folder / f"head_{stamp()}.mp4"
+        h, w = frame.shape[:2]
+        fourcc = cv2.VideoWriter.fourcc(*"mp4v")
+        self._writer = cv2.VideoWriter(str(self.path), fourcc, max(round(fps), 1), (w, h))
+        self._times = []
+
+    def write(self, frame: np.ndarray, t_ms: float) -> None:
+        self._writer.write(frame)
+        self._times.append(t_ms)
+
+    @property
+    def seconds(self) -> float:
+        return (self._times[-1] - self._times[0]) / 1000 if len(self._times) > 1 else 0.0
+
+    def stop(self) -> Path:
+        self._writer.release()
+        self._writer = None
+        t0 = self._times[0] if self._times else 0.0
+        with open(self.path.with_suffix(".times.csv"), "w", newline="") as f:
+            f.write("t_ms\n" + "".join(f"{t - t0:.3f}\n" for t in self._times))
+        return self.path
+
+
 def main() -> None:
     cap = open_camera()
     cv2.namedWindow(WINDOW)
@@ -76,6 +114,7 @@ def main() -> None:
     fps_s, gap_s = Smoother(30), Smoother(15)
     t_prev = time.perf_counter()
     log = SessionLog()
+    rec = Recorder()
     print(f"Logging to {log.path}")
 
     with FaceTracker() as tracker:
@@ -89,6 +128,8 @@ def main() -> None:
             fps = fps_s.add(1 / max(t_now - t_prev, 1e-6))
             t_prev = t_now
 
+            if rec.active:
+                rec.write(raw, now_ms)  # raw = un-mirrored; the sweep runs prepare() itself
             frame = prepare(raw)
             face = tracker.detect(frame, now_ms)
             if face:
@@ -124,15 +165,25 @@ def main() -> None:
             else:
                 status += f"gap {gap_shown:5.1f} px"
             status += f"  |  {fps:4.1f} fps"
+            if rec.active:
+                status += f"  |  REC {rec.seconds:4.1f} s"
             draw_text_strip(view, status, HINT)
             cv2.imshow(WINDOW, view)
 
             key = cv2.waitKey(1) & 0xFF
             if key in (ord("q"), 27):
                 break
+            if key == ord("r"):
+                if rec.active:
+                    print(f"Saved recording {rec.stop()}")
+                else:
+                    rec.start(raw, fps)
+                    print(f"Recording to {rec.path} (press R to stop)")
             if key in MODE_KEYS:
                 mode = MODE_KEYS[key]
 
+    if rec.active:
+        print(f"Saved recording {rec.stop()}")
     log.close()
     cap.release()
     cv2.destroyAllWindows()
