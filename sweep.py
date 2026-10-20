@@ -100,7 +100,29 @@ def mean_speed_px_per_ms(t_ms: np.ndarray, nose: np.ndarray) -> float:
     return float(np.mean(np.linalg.norm(np.diff(p, axis=0), axis=1) / np.diff(t)))
 
 
-def plot(df: pd.DataFrame, out: Path, speed: float | None = None, title: str = "") -> None:
+# Savitzky-Golay (7 points, quadratic): follows smooth head motion exactly, ignores jitter.
+_SG7 = np.array([-2, 3, 6, 7, 6, 3, -2]) / 21
+
+
+def noise_floor_px(nose: np.ndarray) -> float:
+    """Tracker jitter: mean distance between each nose dot and a smooth local fit.
+
+    The gap at 0 ms is zero by construction (sticker and truth are the same dot),
+    so this is the honest floor: wobble that is there even with no delay at all.
+    Only runs of 7 consecutive frames with a face are used.
+    """
+    ok = ~np.isnan(nose[:, 0])
+    full = np.convolve(ok.astype(int), np.ones(7, int), mode="valid") == 7
+    if not full.any():
+        return float("nan")
+    filled = np.where(ok[:, None], nose, 0.0)
+    smooth = np.column_stack([np.convolve(filled[:, i], _SG7[::-1], mode="valid") for i in (0, 1)])
+    centre = nose[3:-3]
+    return float(np.mean(np.linalg.norm(centre[full] - smooth[full], axis=1)))
+
+
+def plot(df: pd.DataFrame, out: Path, speed: float | None = None, title: str = "",
+         noise: float | None = None) -> None:
     import matplotlib
 
     matplotlib.use("Agg")
@@ -113,6 +135,9 @@ def plot(df: pd.DataFrame, out: Path, speed: float | None = None, title: str = "
     if speed:
         d = np.array([0, max(df.delay_ms)])
         ax.plot(d, speed * d, ":", color="gray", label="slip = head speed × delay")
+    if noise and not np.isnan(noise):
+        ax.axhspan(0, noise, color="gray", alpha=0.15, lw=0,
+                   label=f"tracker jitter ≈ {noise:.1f} px (noise floor)")
     ax.set_xlabel("added delay (ms)")
     ax.set_ylabel("average sticker gap (pixels)")
     ax.set_title(title or "Delay Lab sweep: AR sticker error vs delay")
@@ -131,11 +156,13 @@ def sweep_video(path: Path, out_dir: Path = RESULTS, progress=None) -> pd.DataFr
     if found < 10:
         raise RuntimeError(f"Face found in only {found} of {len(t_ms)} frames of {path.name}")
     df = run_sweep(t_ms, nose)
+    noise = noise_floor_px(nose)
+    df["noise_floor_px"] = round(noise, 3)
     out_dir.mkdir(parents=True, exist_ok=True)
     df.to_csv(out_dir / "sweep.csv", index=False)
     pd.DataFrame({"t_ms": t_ms, "nose_x": nose[:, 0], "nose_y": nose[:, 1]}).to_csv(
         out_dir / "track.csv", index=False)
-    plot(df, out_dir / "sweep.png", mean_speed_px_per_ms(t_ms, nose), f"Delay Lab sweep: {path.name}")
+    plot(df, out_dir / "sweep.png", mean_speed_px_per_ms(t_ms, nose), f"Delay Lab sweep: {path.name}", noise)
     return df
 
 

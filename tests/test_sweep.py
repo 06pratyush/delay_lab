@@ -3,7 +3,7 @@
 import numpy as np
 import pytest
 
-from sweep import mean_speed_px_per_ms, plot, run_sweep
+from sweep import mean_speed_px_per_ms, noise_floor_px, plot, run_sweep
 
 
 @pytest.fixture(scope="module")
@@ -60,3 +60,22 @@ def test_plot_writes_png(tmp_path, track, df):
     out = tmp_path / "sweep.png"
     plot(df, out, mean_speed_px_per_ms(*track))
     assert out.stat().st_size > 10_000
+
+
+def test_noise_floor_ignores_smooth_motion(track):
+    _, nose = track
+    assert noise_floor_px(nose) < 0.1
+
+
+def test_noise_floor_measures_jitter(track):
+    _, nose = track
+    rng = np.random.default_rng(0)
+    noisy = nose + rng.normal(0, 1.0, nose.shape)  # 1 px wobble per axis
+    assert noise_floor_px(noisy) == pytest.approx(1.0, rel=0.15)
+
+
+def test_noise_floor_skips_missing_faces(track):
+    _, nose = track
+    nose = nose.copy()
+    nose[::5] = np.nan  # no run of 7 good frames left
+    assert np.isnan(noise_floor_px(nose))
