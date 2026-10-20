@@ -21,3 +21,8 @@ Delay Lab Build Plan.pdf
 .idea/
 Thumbs.db
 .DS_Store
+
+# PyInstaller output
+build/
+dist/
+*.spec
