@@ -1,6 +1,6 @@
 """Delay Lab: one window, one delay slider, switchable modes.
 
-Keys:  V = VR-style   A = AR-style   Q / Esc = quit
+Keys:  V = VR-style   A = AR-style   F = AR + fix   Q / Esc = quit
 """
 
 from __future__ import annotations
@@ -21,9 +21,9 @@ from tracker import FaceTracker, open_camera, prepare
 ROOT = Path(__file__).parent
 WINDOW = "Delay Lab"
 SLIDER = "delay ms"
-MODE_KEYS = {ord("v"): "VR", ord("a"): "AR"}
-MODE_NAMES = {"VR": "VR-style", "AR": "AR-style"}
-HINT = "V: VR   A: AR   slider: delay   Q: quit"
+MODE_KEYS = {ord("v"): "VR", ord("a"): "AR", ord("f"): "FIX"}
+MODE_NAMES = {"VR": "VR-style", "AR": "AR-style", "FIX": "AR + fix"}
+HINT = "V: VR   A: AR   F: AR + fix   slider: delay   Q: quit"
 
 
 class Smoother:
@@ -96,7 +96,10 @@ def main() -> None:
                 face_w = face.width
 
             delay_ms = cv2.getTrackbarPos(SLIDER, WINDOW)
-            sticker = buf.delayed(now_ms, delay_ms)
+            if mode == "FIX":
+                sticker = buf.predicted(now_ms, delay_ms, dt_ms=1000 / fps)
+            else:
+                sticker = buf.delayed(now_ms, delay_ms)
             gap = float(np.linalg.norm(face.nose - sticker)) if face and sticker is not None else float("nan")
             gap_shown = gap_s.add(gap)
             log.row(now_ms, mode, delay_ms, face.nose if face else None, sticker, gap, face_w, fps)

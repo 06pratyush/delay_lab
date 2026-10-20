@@ -47,3 +47,16 @@ class DelayBuffer:
 
     def delayed(self, now_ms: float, delay_ms: float) -> np.ndarray | None:
         return self.at(now_ms - delay_ms)
+
+    def predicted(self, now_ms: float, delay_ms: float, dt_ms: float) -> np.ndarray | None:
+        """The fix: guess ahead from old data only, like a headset does.
+
+        guess = delayed position + velocity * delay, where velocity comes from
+        the last two delayed positions (one frame interval dt_ms apart).
+        """
+        p0 = self.delayed(now_ms, delay_ms)
+        if p0 is None or delay_ms <= 0:
+            return p0
+        p1 = self.delayed(now_ms, delay_ms + dt_ms)
+        velocity = (p0 - p1) / dt_ms
+        return p0 + velocity * delay_ms

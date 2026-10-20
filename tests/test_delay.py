@@ -44,3 +44,20 @@ def test_old_samples_are_dropped():
     for t in range(0, 500, 10):
         buf.push(t, (t, 0))
     assert len(buf) == 11  # 390..490 inclusive
+
+
+def test_prediction_cancels_steady_motion():
+    buf = filled()  # 1 px per ms, constant
+    np.testing.assert_allclose(buf.predicted(now_ms=290, delay_ms=100, dt_ms=10), [290, 5])
+
+
+def test_prediction_with_zero_delay_is_newest():
+    np.testing.assert_allclose(filled().predicted(290, 0, 10), [290, 5])
+
+
+def test_prediction_overshoots_when_head_stops():
+    buf = DelayBuffer()
+    for t in range(0, 300, 10):
+        buf.push(t, (min(t, 200), 0))  # moves, then stops dead at t=200
+    guess = buf.predicted(now_ms=290, delay_ms=100, dt_ms=10)
+    assert guess[0] > 200  # still guessing motion that already ended
