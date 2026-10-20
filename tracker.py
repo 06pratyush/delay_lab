@@ -16,7 +16,7 @@ import numpy as np
 from mediapipe.tasks import python as mp_tasks
 from mediapipe.tasks.python import vision
 
-from download_model import MODEL_PATH
+from paths import MODEL_PATH
 
 NOSE_TIP = 1
 LEFT_CHEEK, RIGHT_CHEEK = 234, 454  # outermost face-oval points, used for face width

@@ -5,7 +5,7 @@ import sys
 import cv2
 import mediapipe as mp
 
-from download_model import MODEL_PATH
+from paths import MODEL_PATH
 
 print(f"Python    {sys.version.split()[0]}")
 print(f"MediaPipe {mp.__version__}")

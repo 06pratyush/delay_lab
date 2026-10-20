@@ -16,10 +16,10 @@ import numpy as np
 
 import sweep
 from delay import MAX_DELAY_MS, DelayBuffer
+from paths import LOGS, RECORDINGS
 from render import draw_room, draw_sticker, draw_text_strip, draw_true_nose, view_from_nose
 from tracker import FaceTracker, open_camera, prepare
 
-ROOT = Path(__file__).parent
 WINDOW = "Delay Lab"
 SLIDER = "delay ms"
 MODE_KEYS = {ord("v"): "VR", ord("a"): "AR", ord("f"): "FIX"}
@@ -49,7 +49,7 @@ class SessionLog:
     COLUMNS = ["t_ms", "mode", "delay_ms", "nose_x", "nose_y", "sticker_x", "sticker_y",
                "gap_px", "face_w_px", "fps"]
 
-    def __init__(self, folder: Path = ROOT / "logs"):
+    def __init__(self, folder: Path = LOGS):
         folder.mkdir(exist_ok=True)
         self.path = folder / f"session_{stamp()}.csv"
         self._file = open(self.path, "w", newline="")
@@ -69,7 +69,7 @@ class SessionLog:
 class Recorder:
     """Saves raw camera frames to recordings/ for the sweep, plus each frame's real capture time."""
 
-    def __init__(self, folder: Path = ROOT / "recordings"):
+    def __init__(self, folder: Path = RECORDINGS):
         self.folder = folder
         self._writer = None
         self._times: list[float] = []

@@ -2,13 +2,13 @@
 
 import sys
 import urllib.request
-from pathlib import Path
+
+from paths import MODEL_PATH
 
 MODEL_URL = (
     "https://storage.googleapis.com/mediapipe-models/face_landmarker/"
     "face_landmarker/float16/1/face_landmarker.task"
 )
-MODEL_PATH = Path(__file__).parent / "models" / "face_landmarker.task"
 
 
 def main() -> int:

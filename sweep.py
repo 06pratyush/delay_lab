@@ -18,10 +18,8 @@ import numpy as np
 import pandas as pd
 
 from delay import MAX_DELAY_MS, DelayBuffer
+from paths import RECORDINGS, RESULTS
 
-ROOT = Path(__file__).parent
-RECORDINGS = ROOT / "recordings"
-RESULTS = ROOT / "results"
 DELAYS_MS = [0, 25, 50, 75, 100, 150]
 
 
