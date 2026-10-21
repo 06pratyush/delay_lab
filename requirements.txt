@@ -3,5 +3,5 @@ mediapipe>=0.10.14
 numpy>=1.26
 pandas>=2.1
 matplotlib>=3.8
-pillow>=10.0
+pillow>=13.0.0
 pytest>=8.0
