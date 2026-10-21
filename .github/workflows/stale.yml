@@ -1,0 +1,35 @@
+name: stale
+
+on:
+  schedule:
+    - cron: "30 3 * * *"   # daily, 03:30 UTC
+  workflow_dispatch:
+
+permissions:
+  issues: write
+  pull-requests: write
+
+jobs:
+  stale:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/stale@4391f3da665fdf50b6810c1a66712fb9ba21aa93  # v11.0.0
+        with:
+          days-before-issue-stale: 60
+          days-before-issue-close: 14
+          days-before-pr-stale: 30
+          days-before-pr-close: 14
+          stale-issue-label: stale
+          stale-pr-label: stale
+          exempt-issue-labels: "good first issue,help wanted,measurement,security,pinned,needs triage"
+          exempt-pr-labels: "pinned,dependencies"
+          exempt-draft-pr: true
+          stale-issue-message: >
+            This issue has had no activity for 60 days, so it's been marked stale.
+            Comment if it still matters and it stays open; otherwise it closes in 14 days.
+          stale-pr-message: >
+            This PR has had no activity for 30 days, so it's been marked stale.
+            Push a commit or comment to keep it open; otherwise it closes in 14 days.
+          close-issue-message: Closed for inactivity. Comment to reopen it if it's still relevant.
+          close-pr-message: Closed for inactivity. Feel free to reopen it when you pick it up again.
+          close-issue-reason: not_planned
