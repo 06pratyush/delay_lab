@@ -1,0 +1,105 @@
+name: 🐞 Bug report
+description: Something in Delay Lab doesn't work as described.
+title: "[Bug]: "
+labels: ["bug", "needs triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report this!
+        **Security problem?** Please don't use this form. See [SECURITY.md](https://github.com/06pratyush/delay_lab/blob/main/SECURITY.md).
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: What did you see, and what did you expect to see instead?
+      placeholder: |
+        In AR + fix mode at 100 ms, the sticker jumps to the top-left corner whenever I stop moving.
+        I expected it to overshoot a little and then settle on my nose.
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. python app.py
+        2. Press F, set the slider to 100
+        3. Turn your head, then stop
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Which part?
+      multiple: true
+      options:
+        - VR-style mode (V)
+        - AR-style mode (A)
+        - AR + fix mode (F)
+        - Recording (R)
+        - Sweep / chart (S, sweep.py)
+        - GIF maker (make_gif.py)
+        - DelayLab.exe / packaging
+        - Setup / model download
+        - Docs
+        - Not sure
+    validations:
+      required: true
+
+  - type: dropdown
+    id: how-run
+    attributes:
+      label: How are you running it?
+      options:
+        - From source (python app.py)
+        - DelayLab.exe
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: A release tag (e.g. v1.0.0) or commit hash. Run `git rev-parse --short HEAD`.
+      placeholder: v1.0.0
+    validations:
+      required: true
+
+  - type: input
+    id: environment
+    attributes:
+      label: Windows and Python version, webcam
+      placeholder: Windows 11 23H2, Python 3.11.9, built-in HD webcam
+    validations:
+      required: true
+
+  - type: textarea
+    id: selftest
+    attributes:
+      label: Self-test output
+      description: |
+        Run `python app.py --selftest 8` (or `DelayLab.exe --selftest 8`) and paste the summary.
+        If the app doesn't start, paste the full error instead.
+      render: shell
+
+  - type: textarea
+    id: extra
+    attributes:
+      label: Anything else?
+      description: |
+        Screenshots, relevant rows from `logs/session_*.csv`, or `results/sweep.csv`.
+        Please don't attach images or videos showing other people's faces.
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before submitting
+      options:
+        - label: I searched the existing issues and this hasn't been reported yet.
+          required: true
+        - label: This is not a security vulnerability (those go through SECURITY.md).
+          required: true
