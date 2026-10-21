@@ -72,8 +72,26 @@ body:
   - type: input
     id: environment
     attributes:
-      label: Windows and Python version, webcam
+      label: OS and Python version, webcam
       placeholder: Windows 11 23H2, Python 3.11.9, built-in HD webcam
+    validations:
+      required: true
+
+  - type: input
+    id: camera-index
+    attributes:
+      label: Camera index
+      description: 0 unless you started the app with `--camera N`.
+      placeholder: "0"
+    validations:
+      required: true
+
+  - type: input
+    id: strip
+    attributes:
+      label: What the strip at the top shows
+      description: The fps, and whether it says "no face". These two numbers explain most tracking problems.
+      placeholder: "AR-style | delay 100 ms | no face | 14.2 fps"
     validations:
       required: true
 
