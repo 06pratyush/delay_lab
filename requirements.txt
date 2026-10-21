@@ -1,7 +1,8 @@
 # Python 3.11. mediapipe brings in opencv-contrib-python (cv2), so don't also install opencv-python.
-mediapipe>=0.10.14
+# Minimums are the versions CI and the live webcam tests ran with; Dependabot raises them.
+mediapipe>=1.1.1        # 1.x: Tasks API via libmediapipe.dll, which build_exe.py bundles
 numpy>=1.26
-pandas>=2.1
+pandas>=3.0.6
 matplotlib>=3.8
-pillow>=10.0
-pytest>=8.0
+pillow>=13.0.0
+pytest>=9.1.1
