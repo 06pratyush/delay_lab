@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Delay Lab</title>
+  <meta name="description" content="See why AR punishes headset delay more than VR, on an ordinary laptop webcam. A Python face-tracking lab that adds delay, measures the sticker slip in pixels and fixes it with prediction.">
+  <meta property="og:title" content="Delay Lab">
+  <meta property="og:description" content="Why AR punishes headset delay more than VR, shown on a laptop webcam.">
+  <meta property="og:image" content="https://06pratyush.github.io/delay_lab/img/social_preview.png">
+  <meta property="og:url" content="https://06pratyush.github.io/delay_lab/">
+  <meta name="twitter:card" content="summary_large_image">
+  <style>
+    :root {
+      --page: #f9f9f7; --surface: #fcfcfb; --ink: #0b0b0b; --ink-2: #52514e; --muted: #898781;
+      --line: #e1e0d9; --accent: #2a78d6; --accent-ink: #ffffff; --warn-bg: #fff7e6; --warn-line: #eda100;
+      --code-bg: #f0efec;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --page: #0d0d0d; --surface: #1a1a19; --ink: #f0efec; --ink-2: #c3c2b7; --muted: #898781;
+        --line: #2c2c2a; --accent: #3987e5; --accent-ink: #ffffff; --warn-bg: #2a2310; --warn-line: #c98500;
+        --code-bg: #222220;
+      }
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; background: var(--page); color: var(--ink);
+      font: 17px/1.6 system-ui, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+    }
+    .wrap { max-width: 980px; margin: 0 auto; padding: 0 16px; }
+    header { padding: 56px 0 24px; text-align: center; }
+    h1 { font-size: clamp(2.4rem, 6vw, 3.6rem); line-height: 1.05; margin: 0 0 12px; letter-spacing: -0.02em; }
+    .tagline { font-size: clamp(1.1rem, 2.6vw, 1.35rem); color: var(--ink-2); margin: 0 auto 28px; max-width: 34em; }
+    .cta { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+    .btn {
+      display: inline-block; padding: 10px 18px; border-radius: 10px; text-decoration: none; font-weight: 600;
+      border: 1px solid var(--line); color: var(--ink); background: var(--surface);
+    }
+    .btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+    .btn:hover { filter: brightness(1.06); }
+    figure { margin: 28px 0; }
+    figure img { width: 100%; height: auto; border-radius: 12px; border: 1px solid var(--line); display: block; }
+    figcaption { color: var(--muted); font-size: 0.85rem; margin-top: 8px; }
+    section { padding: 28px 0; border-top: 1px solid var(--line); }
+    h2 { font-size: 1.6rem; margin: 0 0 14px; letter-spacing: -0.01em; }
+    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+    .card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; }
+    .card h3 { margin: 0 0 6px; font-size: 1.05rem; }
+    .card p { margin: 0; color: var(--ink-2); }
+    kbd {
+      font: 600 0.85em/1 ui-monospace, Consolas, monospace; padding: 3px 7px; border-radius: 6px;
+      border: 1px solid var(--line); border-bottom-width: 2px; background: var(--surface);
+    }
+    .formula { font-size: 1.3rem; font-weight: 700; color: var(--accent); }
+    .status { background: var(--warn-bg); border-left: 4px solid var(--warn-line); border-radius: 8px; padding: 14px 18px; }
+    .status p { margin: 4px 0; }
+    pre {
+      background: var(--code-bg); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px;
+      overflow-x: auto; font: 0.9rem/1.5 ui-monospace, Consolas, monospace;
+    }
+    table { border-collapse: collapse; width: 100%; font-size: 0.95rem; }
+    th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); }
+    th { color: var(--ink-2); font-weight: 600; }
+    td.num { text-align: right; font-variant-numeric: tabular-nums; }
+    .table-scroll { overflow-x: auto; }
+    a { color: var(--accent); }
+    footer { padding: 32px 0 48px; color: var(--muted); font-size: 0.9rem; border-top: 1px solid var(--line); }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Delay Lab</h1>
+      <p class="tagline">See why AR punishes headset delay more than VR, on an ordinary laptop webcam.
+        Add a delay, watch a sticker slide off your nose, measure the slide in pixels, then fix it with prediction.</p>
+      <div class="cta">
+        <a class="btn primary" href="https://github.com/06pratyush/delay_lab">View on GitHub</a>
+        <a class="btn" href="https://github.com/06pratyush/delay_lab/releases/latest">Download DelayLab.exe</a>
+        <a class="btn" href="https://github.com/06pratyush/delay_lab/blob/main/CONTRIBUTING.md">Contribute</a>
+      </div>
+    </header>
+
+    <figure>
+      <img src="img/demo_simulated.gif" width="1208" height="326"
+           alt="Animated simulation at 100 ms of delay: the VR-style room follows the head late; in AR-style the red sticker trails the real nose; in AR + fix it stays on the nose.">
+      <figcaption><b>Simulated</b>, not a webcam recording: a synthetic head swings side to side, and Delay Lab's real
+        delay buffer, prediction and drawing code produce every frame.</figcaption>
+    </figure>
+
+    <section>
+      <h2>The idea in 30 seconds</h2>
+      <div class="cards">
+        <div class="card"><h3>Every headset is a little late</h3>
+          <p>When you move your head, the picture catches up a few milliseconds afterwards.</p></div>
+        <div class="card"><h3>In VR you can't see it</h3>
+          <p>The whole fake world is late together. You only feel it, as floatiness or, above about 50 ms, sickness.</p></div>
+        <div class="card"><h3>In AR you can</h3>
+          <p>The real world is never late, so a virtual object visibly slides off the real thing it was stuck to.</p></div>
+      </div>
+      <p style="margin-top:20px"><span class="formula">slip = head speed × delay</span><br>
+        At a normal 100°/s head turn, 20 ms of delay moves an AR object 1 m away by about 3.5 cm.</p>
+      <figure>
+        <img src="img/slip_vs_delay.png" width="1110" height="600" loading="lazy"
+             alt="Chart: AR object slip at 1 m grows in a straight line with delay; Vision Pro 11 ms gives 1.9 cm, Quest 3 about 6–7 cm, a laptop webcam 10–26 cm.">
+        <figcaption>Calculated from the formula and published latency figures, not a Delay Lab measurement.</figcaption>
+      </figure>
+    </section>
+
+    <section>
+      <h2>Three modes, one key each</h2>
+      <div class="cards">
+        <div class="card"><h3><kbd>V</kbd> VR-style</h3><p>Camera hidden. A wireframe room moves with your delayed head.</p></div>
+        <div class="card"><h3><kbd>A</kbd> AR-style</h3><p>Your live face, with a red sticker at the delayed nose position.</p></div>
+        <div class="card"><h3><kbd>F</kbd> AR + fix</h3><p>The sticker is drawn where your head is predicted to be: late position + speed × delay.</p></div>
+      </div>
+      <p>A slider sets the added delay (0–150 ms). The strip at the top shows the gap between the sticker and your real nose, in pixels.</p>
+    </section>
+
+    <section>
+      <h2>Where the project stands</h2>
+      <div class="status">
+        <p>✅ <b>Verified:</b> the app runs live on a laptop webcam (~30 fps, face found in ~100% of frames), the packaged exe
+          runs without Python, and 26 tests pass.</p>
+        <p>⏳ <b>Pending:</b> the 20-second sweep recording the experiment is built around.
+          <a href="https://github.com/06pratyush/delay_lab/blob/main/docs/measurements/README.md">Want to record the first one?</a></p>
+        <p>⚠️ <b>So far:</b> the only real measurement is one 2.5 s self-test clip. That's a first sign, not a result.</p>
+      </div>
+      <figure>
+        <img src="img/expected_sweep.png" width="1050" height="630" loading="lazy"
+             alt="Expected sweep chart: without the fix the gap grows in a straight line; with the fix it stays several times smaller.">
+        <figcaption>A <b>prediction</b>, not a measurement: synthetic head motion run through the real sweep code.</figcaption>
+      </figure>
+    </section>
+
+    <section>
+      <h2>Try it</h2>
+      <p>Windows 10/11, a webcam and Python 3.11. Or download <b>DelayLab.exe</b> and skip Python altogether.</p>
+<pre>py -3.11 -m venv .venv &amp;&amp; .venv\Scripts\activate
+pip install -r requirements.txt
+python download_model.py      # one-time, ~4 MB face model
+python app.py                 # or: python app.py --selftest 8</pre>
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>System</th><th>Motion-to-photon delay</th><th>AR slip at 1 m (100°/s)</th></tr></thead>
+          <tbody>
+            <tr><td>Comfortable VR target (3GPP TR 26.918)</td><td class="num">&lt; ~20 ms</td><td class="num">&lt; 3.5 cm</td></tr>
+            <tr><td>Apple Vision Pro passthrough</td><td class="num">~11 ms</td><td class="num">~1.9 cm</td></tr>
+            <tr><td>Meta Quest 3 / Quest Pro / HTC Vive XR Elite</td><td class="num">~35–40 ms</td><td class="num">~6–7 cm</td></tr>
+            <tr><td>A laptop webcam pipeline</td><td class="num">~60–150 ms</td><td class="num">~10–26 cm</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h2>Help out, no webcam needed</h2>
+      <p>The tests run on synthetic head tracks, so you can work on the sweep maths, charts, docs and CI without a camera.
+        Look for <a href="https://github.com/06pratyush/delay_lab/labels/good%20first%20issue">good first issues</a>,
+        or ask in <a href="https://github.com/06pratyush/delay_lab/discussions">Discussions</a>.</p>
+    </section>
+
+    <footer>
+      Delay Lab · MIT License · <a href="https://github.com/06pratyush/delay_lab">github.com/06pratyush/delay_lab</a>
+    </footer>
+  </div>
+</body>
+</html>
