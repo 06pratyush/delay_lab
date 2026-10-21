@@ -16,8 +16,15 @@
 </p>
 
 <p align="center">
-  <img src="docs/img/modes.svg" alt="Illustration of the three modes at 100 ms of delay: VR-style room, AR-style sticker sliding off the nose, AR + fix sticker back on the nose" width="100%"><br>
-  <sub>Illustration of the three modes. The gap numbers in it are examples, not measurements.</sub>
+  <a href="https://06pratyush.github.io/delay_lab/"><b>🌐 Project site</b></a> ·
+  <a href="https://github.com/06pratyush/delay_lab/releases/latest"><b>⬇️ Download DelayLab.exe</b></a> ·
+  <a href="CONTRIBUTING.md"><b>🤝 Contribute (no webcam needed)</b></a>
+</p>
+
+<p align="center">
+  <img src="docs/img/demo_simulated.gif" alt="Animated simulation at 100 ms of delay: the VR-style room follows the head late; in AR-style the red sticker trails the real nose; in AR + fix it stays on the nose" width="100%"><br>
+  <sub><b>Simulated</b>, not a webcam recording: a synthetic head swings side to side, and Delay Lab's real delay buffer,
+  prediction and drawing code produce every frame. A smooth swing like this suits the fix better than a real head does.</sub>
 </p>
 
 > [!TIP]
@@ -30,7 +37,7 @@
 > | | |
 > |---|---|
 > | ✅ **Verified** | The app runs live on a laptop webcam (~30 fps, face found in ~100% of frames). All three modes, recording and the sweep run end to end. The packaged exe runs without Python. 26 tests pass. |
-> | ⏳ **Pending** | The proper **20-second sweep recording** the experiment is built around, and the clap test for the webcam's own delay. |
+> | ⏳ **Pending** | The proper **20-second sweep recording** the experiment is built around, and the clap test for the webcam's own delay. Want to be first? See [docs/measurements](docs/measurements/README.md). |
 > | ⚠️ **So far** | The only real measurement is one **2.5 s self-test clip**. It is a first sign, not a result ([details](#-the-experiment)). |
 
 **Contents:** [The idea](#-the-idea-in-30-seconds) · [Quick start](#-quick-start) · [Controls](#-controls) · [What you see](#-what-you-see) · [The experiment](#-the-experiment) · [How it works](#-how-it-works) · [Real numbers](#-real-world-numbers) · [Presenting](#-presenting-it) · [DelayLab.exe](#-delaylabexe) · [Help](#-troubleshooting) · [Contributing](#-contributing)
@@ -99,6 +106,11 @@ Prefer no Python at all? See [**DelayLab.exe**](#-delaylabexe).
 ---
 
 ## 👀 What you see
+
+<p align="center">
+  <img src="docs/img/modes.svg" alt="Illustration of the three modes at 100 ms of delay: VR-style room, AR-style sticker sliding off the nose, AR + fix sticker back on the nose" width="100%"><br>
+  <sub>Illustration of the three modes. The gap numbers in it are examples, not measurements.</sub>
+</p>
 
 <table>
 <tr>
@@ -241,6 +253,7 @@ Press <kbd>R</kbd>, show the sticker sliding at 100 ms, switch to <kbd>F</kbd>, 
 python make_gif.py --start 2 --seconds 6     # newest demo_*.mp4 → results/demo.gif
 ```
 
+To replace the simulated GIF at the top with a real one, save yours as `docs/img/demo.gif` and point the README at it.
 The GIF shows your face, so it stays in `results/` (not committed) unless you choose to move it to
 `docs/` and add it here.
 </details>
@@ -302,6 +315,11 @@ CI runs the tests on Windows with Python 3.11 on every push.
 ## 🤝 Contributing
 
 Contributions are welcome: bug reports, docs, new modes, and real measurements from other webcams.
+**No webcam? You can still help:** the tests run on synthetic head tracks. Look for
+[`good first issue`](https://github.com/06pratyush/delay_lab/labels/good%20first%20issue) and
+[`no webcam needed`](https://github.com/06pratyush/delay_lab/labels/no%20webcam%20needed).
+Taking part in **Hacktoberfest**? Issues labelled [`hacktoberfest`](https://github.com/06pratyush/delay_lab/labels/hacktoberfest) are ready.
+Questions go to [Discussions](https://github.com/06pratyush/delay_lab/discussions).
 
 | | |
 |---|---|
