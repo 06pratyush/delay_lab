@@ -1,0 +1,8 @@
+# Every change is reviewed by the maintainer. GitHub requests the review automatically.
+# Later lines win, so a module can get its own owner here when a regular contributor takes it on.
+*                       @06pratyush
+
+# Rules that keep the repo safe: changes here need extra care.
+/.github/               @06pratyush
+/SECURITY.md            @06pratyush
+/build_exe.py           @06pratyush
