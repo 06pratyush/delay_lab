@@ -14,7 +14,19 @@ By taking part you agree to follow the [Code of Conduct](CODE_OF_CONDUCT.md).
 | Suggest a feature | [Open a feature request](https://github.com/06pratyush/delay_lab/issues/new?template=feature_request.yml) *before* writing code. |
 | Fix something small | Typos, docs and clear one-line bugs can go straight to a pull request. |
 | Pick up a task | Look for issues labelled [`good first issue`](https://github.com/06pratyush/delay_lab/labels/good%20first%20issue). |
-| Share a measurement | Open an issue with your `results/sweep.csv`, your webcam model and how you recorded it. Real results from other webcams are very welcome. |
+| Share a measurement | Record a 20 s sweep and add it under [`docs/measurements/`](docs/measurements/README.md). Real results from other webcams are very welcome. |
+
+### No webcam? You can still help
+
+The whole test suite runs on **synthetic head tracks**, so you don't need a camera, a face model or a
+headset to work on Delay Lab. Issues labelled [`no webcam needed`](https://github.com/06pratyush/delay_lab/labels/no%20webcam%20needed)
+are picked for that: the sweep maths, the charts, the docs and the CI.
+
+### Hacktoberfest
+
+Delay Lab takes part in Hacktoberfest. Issues labelled [`hacktoberfest`](https://github.com/06pratyush/delay_lab/labels/hacktoberfest)
+are ready to pick up. Merged pull requests get the `hacktoberfest-accepted` label. Low-effort or spam pull requests
+(whitespace changes, reworded docs that add nothing) are closed and labelled `invalid`.
 
 Ideas already on the wish list:
 - **Timewarp:** last-moment correction as a fourth mode.
@@ -118,6 +130,17 @@ in issues and pull requests.
 5. **Make sure CI is green.** A pull request with failing tests can't be merged.
 6. **Review:** the maintainer aims to reply within about a week. Please answer review comments with new commits rather than force-pushing, so the conversation stays readable.
 7. **Merge:** pull requests are squash-merged, so the pull request title becomes the commit message. Write the title as a Conventional Commit too.
+
+## Roles and access
+
+- **Everyone** contributes the same way: fork the repo, push to a branch in your fork, and open a pull request.
+  Nobody needs write access to contribute.
+- **Write access isn't handed out by default.** `main` is protected: every change needs a pull request,
+  a passing `pytest` check and resolved review threads, and nobody can bypass that, maintainers included.
+- **Regular contributors** may be invited to the **Triage** role (label, assign and close issues) after
+  several merged pull requests. Write access comes later, if at all, and never just for convenience.
+- **The maintainer** ([@06pratyush](https://github.com/06pratyush)) reviews every pull request. CODEOWNERS
+  requests the review automatically.
 
 ## License
 
