@@ -1,5 +1,5 @@
 # Python 3.11. mediapipe brings in opencv-contrib-python (cv2), so don't also install opencv-python.
-mediapipe>=0.10.14
+mediapipe>=1.1.1
 numpy>=1.26
 pandas>=2.1
 matplotlib>=3.8
