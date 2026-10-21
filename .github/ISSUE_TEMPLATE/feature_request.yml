@@ -1,0 +1,58 @@
+name: 💡 Feature request
+description: Suggest an idea or improvement for Delay Lab.
+title: "[Feature]: "
+labels: ["enhancement", "needs triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the idea! Please open this *before* writing code, so we can agree on the approach first.
+        Some ideas are already on the wish list in [CONTRIBUTING.md](https://github.com/06pratyush/delay_lab/blob/main/CONTRIBUTING.md#ways-to-help).
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem would this solve?
+      description: Who is it for, and what can't they do (or understand) today?
+      placeholder: When I present Delay Lab, the audience can't see why timewarp would help, because there's no mode for it.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What would you like to happen?
+      description: Describe the behaviour, keys, output files or charts you have in mind.
+      placeholder: A fourth mode (key T) that shifts the finished frame by the newest head position just before it's shown.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives you've considered
+      description: Other ways to get the same result, including "do nothing".
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Which part would it touch?
+      multiple: true
+      options:
+        - VR-style mode
+        - AR-style / AR + fix modes
+        - A new mode
+        - Tracking (tracker.py)
+        - Delay / prediction (delay.py)
+        - Sweep / chart
+        - Recording / GIF
+        - DelayLab.exe / packaging
+        - Docs / demo script
+        - Other
+
+  - type: checkboxes
+    id: contribute
+    attributes:
+      label: Contributing
+      options:
+        - label: I'd like to work on this myself (see CONTRIBUTING.md).
