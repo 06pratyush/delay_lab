@@ -12,6 +12,7 @@
   <img alt="OpenCV" src="https://img.shields.io/badge/OpenCV-5-5C3EE8?logo=opencv&logoColor=white">
   <img alt="No headset needed" src="https://img.shields.io/badge/headset-not%20needed-2ea043">
   <img alt="MIT license" src="https://img.shields.io/github/license/06pratyush/delay_lab">
+  <a href="CONTRIBUTING.md"><img alt="PRs welcome" src="https://img.shields.io/badge/PRs-welcome-2ea043"></a>
 </p>
 
 <p align="center">
@@ -32,7 +33,7 @@
 > | ⏳ **Pending** | The proper **20-second sweep recording** the experiment is built around, and the clap test for the webcam's own delay. |
 > | ⚠️ **So far** | The only real measurement is one **2.5 s self-test clip**. It is a first sign, not a result ([details](#-the-experiment)). |
 
-**Contents:** [The idea](#-the-idea-in-30-seconds) · [Quick start](#-quick-start) · [Controls](#-controls) · [What you see](#-what-you-see) · [The experiment](#-the-experiment) · [How it works](#-how-it-works) · [Real numbers](#-real-world-numbers) · [Presenting](#-presenting-it) · [DelayLab.exe](#-delaylabexe) · [Help](#-troubleshooting)
+**Contents:** [The idea](#-the-idea-in-30-seconds) · [Quick start](#-quick-start) · [Controls](#-controls) · [What you see](#-what-you-see) · [The experiment](#-the-experiment) · [How it works](#-how-it-works) · [Real numbers](#-real-world-numbers) · [Presenting](#-presenting-it) · [DelayLab.exe](#-delaylabexe) · [Help](#-troubleshooting) · [Contributing](#-contributing)
 
 ---
 
@@ -297,6 +298,17 @@ python docs/make_figures.py      # rebuild the charts and screenshot in docs/img
 ```
 
 CI runs the tests on Windows with Python 3.11 on every push.
+
+## 🤝 Contributing
+
+Contributions are welcome: bug reports, docs, new modes, and real measurements from other webcams.
+
+| | |
+|---|---|
+| 📘 [CONTRIBUTING.md](CONTRIBUTING.md) | Dev setup, tests, code style, branch and commit conventions, PR process |
+| 🐞 [Report a bug](https://github.com/06pratyush/delay_lab/issues/new?template=bug_report.yml) · 💡 [Request a feature](https://github.com/06pratyush/delay_lab/issues/new?template=feature_request.yml) | Issue forms that ask for what's needed to help |
+| 🤝 [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) | Contributor Covenant 2.0 |
+| 🔒 [SECURITY.md](SECURITY.md) | Report vulnerabilities **privately**, not in a public issue |
 
 ## License
 
