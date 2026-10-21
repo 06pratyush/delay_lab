@@ -1,0 +1,28 @@
+# Weekly dependency PRs; security updates arrive as soon as an advisory is published.
+version: 2
+updates:
+  - package-ecosystem: pip
+    directory: "/"            # requirements.txt and requirements-build.txt
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 5
+    labels: ["dependencies"]
+    commit-message:
+      prefix: "build(deps)"
+    groups:
+      python-deps:
+        patterns: ["*"]
+        update-types: ["minor", "patch"]
+
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+    labels: ["dependencies"]
+    commit-message:
+      prefix: "ci(deps)"
+    groups:
+      actions:
+        patterns: ["*"]
