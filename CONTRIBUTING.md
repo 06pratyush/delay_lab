@@ -102,7 +102,7 @@ in issues and pull requests.
 - **Common scopes:** `app`, `tracker`, `delay`, `render`, `sweep`, `charts`.
 - **Examples from this repo:**
   - `feat(delay): guess-ahead prediction and AR + fix mode`
-  - `fix(app): reset the fps meter after a sweep`
+  - `feat(sweep): tracker-jitter noise floor on the chart and CSV`
 - **Keep commits small:** one logical change per commit is easier to review than one big commit.
 
 ## Pull request process
