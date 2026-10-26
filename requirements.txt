@@ -2,7 +2,7 @@
 # Minimums are the versions CI and the live webcam tests ran with; Dependabot raises them.
 mediapipe>=1.1.1        # 1.x: Tasks API via libmediapipe.dll, which build_exe.py bundles
 numpy>=1.26
-pandas>=3.0.6
+pandas>=3.1.0
 matplotlib>=3.8
 pillow>=13.0.0
 pytest>=9.1.1
